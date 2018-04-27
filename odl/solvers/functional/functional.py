@@ -48,7 +48,7 @@ class Functional(Operator):
     <http://odlgroup.github.io/odl/guide/in_depth/functional_guide.html>`_.
     """
 
-    def __init__(self, domain, linear=False, grad_lipschitz=np.nan, range=None):
+    def __init__(self, domain, linear=False, grad_lipschitz=np.nan,range=None):
         """Initialize a new instance.
 
         Parameters
@@ -65,10 +65,10 @@ class Functional(Operator):
         # subclasses with multiple inheritance (at least those where both
         # parents implement `__init__`, e.g., in `ScalingFunctional`)
 #        print(range)
-        if range==None:
-            range=domain.field
-        elif range!=domain.field:
-            linear=False
+        if range is None:
+            range = domain.field
+        elif range != domain.field:
+            linear = False
         Operator.__init__(self, domain=domain, range=range, linear=linear)
         self.__grad_lipschitz = float(grad_lipschitz)
 
@@ -476,7 +476,8 @@ class FunctionalLeftScalarMult(Functional, OperatorLeftScalarMult):
 
         Functional.__init__(
             self, domain=func.domain, linear=func.is_linear,
-            grad_lipschitz=np.abs(scalar) * func.grad_lipschitz, range=func.range)
+            grad_lipschitz=np.abs(scalar) * func.grad_lipschitz,
+            range=func.range)
         OperatorLeftScalarMult.__init__(self, operator=func, scalar=scalar)
 
     @property
@@ -568,7 +569,8 @@ class FunctionalRightScalarMult(Functional, OperatorRightScalarMult):
 
         Functional.__init__(
             self, domain=func.domain, linear=func.is_linear,
-            grad_lipschitz=np.abs(scalar) * func.grad_lipschitz, range=func.range)
+            grad_lipschitz=np.abs(scalar) * func.grad_lipschitz,
+            range=func.range)
         OperatorRightScalarMult.__init__(self, operator=func, scalar=scalar)
 
     @property
@@ -737,11 +739,13 @@ class FunctionalSum(Functional, OperatorSum):
             raise TypeError('`right` {!r} is not a `Functional` instance'
                             ''.format(right))
         if left.range!=right.range:
-            raise TypeError('The ranges of the left and right operators are not equal')
+            raise TypeError('The ranges of `functionals` {!r} and {!r} '
+                            'are not equal'.format(left, right))
         Functional.__init__(
             self, domain=left.domain,
             linear=(left.is_linear and right.is_linear),
-            grad_lipschitz=left.grad_lipschitz + right.grad_lipschitz, range=left.range)
+            grad_lipschitz=left.grad_lipschitz + right.grad_lipschitz,
+            range=left.range)
         OperatorSum.__init__(self, left, right)
 
     @property
@@ -939,7 +943,8 @@ class InfimalConvolution(Functional):
                             ''.format(right))
 
         super(InfimalConvolution, self).__init__(
-            domain=left.domain, linear=False, grad_lipschitz=np.nan, range=left.range)
+            domain=left.domain, linear=False, grad_lipschitz=np.nan,
+            range=left.range)
         self.__left = left
         self.__right = right
 
@@ -1222,11 +1227,13 @@ class FunctionalQuotient(Functional):
 
         if dividend.domain != divisor.domain:
             raise ValueError('domains of the operators do not match')
-
+        if dividend.range is not divisor.range:
+            raise ValueError('range of the operators do not match')
+        
         self.__dividend = dividend
         self.__divisor = divisor
         
-        #HELP: Check ranges?
+
         super(FunctionalQuotient, self).__init__(
             dividend.domain, linear=False, grad_lipschitz=np.nan,
             range=dividend.range)
