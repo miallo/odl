@@ -182,7 +182,7 @@ class LinCombOperator(Operator):
         LinCombOperator(a, b)([x, y]) == a * x + b * y
     """
 
-    def __init__(self, space, a, b):
+    def __init__(self, space, a, b, rangeType=None):
         """Initialize a new instance.
 
         Parameters
@@ -204,8 +204,11 @@ class LinCombOperator(Operator):
         >>> z
         rn(3).element([ 2.,  4.,  6.])
         """
+        if rangeType is None:
+            rangeType = 'complex' if space.is_complex else 'float'
         domain = ProductSpace(space, space)
-        super(LinCombOperator, self).__init__(domain, space, linear=True)
+        super(LinCombOperator, self).__init__(domain, space.astype(rangeType),
+                                              linear=True)
         self.a = a
         self.b = b
 
@@ -213,7 +216,8 @@ class LinCombOperator(Operator):
         """Linearly combine ``x`` and write to ``out`` if given."""
         if out is None:
             out = self.range.element()
-        out.lincomb(self.a, x[0], self.b, x[1])
+        out.lincomb(self.a, x[0],
+                    self.b, x[1])
         return out
 
     def __repr__(self):
@@ -952,7 +956,7 @@ class RealPart(Operator):
         uniform_discr(0.0, 1.0, 3).element([ 1.,  2.,  3.])
         """
         real_space = space.real_space
-        linear = (space == real_space)
+        linear = True  # (space == real_space)
         super(RealPart, self).__init__(space, real_space, linear=linear)
 
     def _call(self, x):
@@ -1079,7 +1083,7 @@ class ImagPart(Operator):
         rn(3).element([ 0.,  0.,  0.])
         """
         real_space = space.real_space
-        linear = (space == real_space)
+        linear = True  # (space == real_space)
         super(ImagPart, self).__init__(space, real_space, linear=linear)
 
     def _call(self, x):
