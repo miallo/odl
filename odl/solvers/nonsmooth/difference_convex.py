@@ -93,8 +93,6 @@ def dca(x, f, g, niter, callback=None):
 
         if callback is not None:
             callback(x)
-    if callback is not None:
-        callback.final()
 
 
 def prox_dca(x, f, g, niter, gamma, callback=None):
@@ -166,8 +164,6 @@ def prox_dca(x, f, g, niter, gamma, callback=None):
 
         if callback is not None:
             callback(x)
-    if callback is not None:
-        callback.final()
 
 
 def doubleprox_dc(x, y, f, phi, g, K, niter, gamma, mu, callback=None):
@@ -259,9 +255,6 @@ def doubleprox_dc(x, y, f, phi, g, K, niter, gamma, mu, callback=None):
 
         if callback is not None:
             callback(x)
-
-    if callback is not None:
-        callback.final()
 
 
 def doubleprox_dc_simple(x, y, f, phi, g, K, niter, gamma, mu):

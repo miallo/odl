@@ -115,8 +115,6 @@ def proximal_gradient(x, f, g, gamma, niter, callback=None, **kwargs):
 
         if callback is not None:
             callback(x)
-    if callback is not None:
-        callback.final()
 
 
 def accelerated_proximal_gradient(x, f, g, gamma, niter, callback=None,
@@ -213,8 +211,6 @@ def accelerated_proximal_gradient(x, f, g, gamma, niter, callback=None,
 
         if callback is not None:
             callback(x)
-    if callback is not None:
-        callback.final()
 
 
 if __name__ == '__main__':

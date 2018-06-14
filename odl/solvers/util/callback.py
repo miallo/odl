@@ -102,14 +102,6 @@ class Callback(object):
         """
         pass
 
-    def final(self):
-        """Can perform action once the optimization algorithm finished.
-
-        Used e.g. for `CallbackShowConvergence` to save the plot after all
-        iterations are finished.
-        """
-        pass
-
     def __repr__(self):
         """Return ``repr(self)``."""
         return '{}()'.format(self.__class__.__name__)
@@ -141,11 +133,6 @@ class _CallbackAnd(Callback):
         """Reset all callbacks to their initial state."""
         for callback in self.callbacks:
             callback.reset()
-
-    def final(self):
-        """Reset all callbacks to their initial state."""
-        for callback in self.callbacks:
-            callback.final()
 
     def __repr__(self):
         """Return ``repr(self)``."""
@@ -835,7 +822,7 @@ class CallbackShowConvergence(Callback):
     """Displays a convergence plot."""
 
     def __init__(self, functional, title='convergence', logx=False, logy=False,
-                 saveto=None, **kwargs):
+                 **kwargs):
         """Initialize a new instance.
 
         Parameters
@@ -849,8 +836,6 @@ class CallbackShowConvergence(Callback):
             If true, the x axis is logarithmic.
         logx : bool, optional
             If true, the y axis is logarithmic.
-        saveto: str, optional
-            Filename for saving the plot if not `None`.
 
         Other Parameters
         ----------------
@@ -862,8 +847,6 @@ class CallbackShowConvergence(Callback):
         self.logx = logx
         self.logy = logy
         self.saveto = saveto
-        self.dpi = kwargs.pop('dpi', None)
-        self.bbox_inches = kwargs.pop('bbox_inches', None)
         self.kwargs = kwargs
         self.iter = 0
 
@@ -890,11 +873,6 @@ class CallbackShowConvergence(Callback):
     def reset(self):
         """Set `iter` to 0."""
         self.iter = 0
-
-    def final(self):
-        if self.saveto:
-            self.fig.savefig(self.saveto, dpi=self.dpi,
-                             bbox_inches=self.bbox_inches)
 
     def __repr__(self):
         """Return ``repr(self)``."""
